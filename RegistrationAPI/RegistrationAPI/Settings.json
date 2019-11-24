@@ -1,0 +1,3 @@
+{
+    "StorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=taodemodb;AccountKey=Yvul3oLJyIh98u3gG1Ffs2EWIJ5nPG3VPPuOxVFMhUZjFGvHxFCenULWwd6sARW34yfvGaDTBSz4RMNO7gpi1A==;TableEndpoint=https://taodemodb.table.cosmos.azure.com:443/;"
+}

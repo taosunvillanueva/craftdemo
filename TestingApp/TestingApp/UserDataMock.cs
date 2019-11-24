@@ -16,14 +16,13 @@
 
         private static UserRegistry FetchData()
         {
-            return new UserRegistry()
-            {
-                Name = "Tao",
-                Email = "tao.sun.toto@me.com",
-                OfficeLocation = "San Diego",
-                SecurityInterest = "Getting Ahead of Attackers",
-                ShirtSize = "Men M"
-            };
+            var name = "Tao3";
+            var email = "tao.sun.toto@gmail.com";
+            var officeLocation = "San Diego";
+            var securityInterest = "Getting Ahead of Attackers";
+            var shirtSize = "Men M";
+
+            return new UserRegistry(name, email, officeLocation, securityInterest, shirtSize);
         }
     }
 }
