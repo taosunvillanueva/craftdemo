@@ -1,36 +1,37 @@
 import React from 'react';
 import Select from 'react-select';
+import axios from 'axios';
 import './App.css';
 
 const officeOptions = [
-    { value: 'seattle', label: 'Seattle'},
-    { value: 'sandiego', label: 'San Diego'},
-    { value: 'newyork', label: 'New York'},
-    { value: 'boston', label: 'Boston'}
+    { value: 'Seattle', label: 'Seattle'},
+    { value: 'San Diego', label: 'San Diego'},
+    { value: 'New York', label: 'New York'},
+    { value: 'Boston', label: 'Boston'}
 ]
 
 const interestOptions = [
-    { value: 'talks', label: '101 Talks & Workshops'},
-    { value: 'application', label: 'Application Security'},
-    { value: 'ahead', label: 'Getting Ahead of Attackers'},
-    { value: 'iot', label: 'Internet of Things'},
-    { value: 'offensive', label: 'Offensive Security'},
-    { value: 'hack', label: 'Web Hacking'},
+    { value: '101 Talks & Workshops', label: '101 Talks & Workshops'},
+    { value: 'Application Security', label: 'Application Security'},
+    { value: 'Getting Ahead of Attackers', label: 'Getting Ahead of Attackers'},
+    { value: 'Internet of Things', label: 'Internet of Things'},
+    { value: 'Offensive Security', label: 'Offensive Security'},
+    { value: 'Web Hacking', label: 'Web Hacking'},
 ]
 
 const tshirtOptions = [
-    { value: 'ws', label: 'Womens S'},
-    { value: 'wm', label: 'Womens M'},
-    { value: 'wl', label: 'Womens L'},
-    { value: 'wxl', label: 'Womens XL'},
-    { value: 'wxxl', label: 'Womens XXL'},
-    { value: 'w3xl', label: 'Womens 3XL'},
-    { value: 'ms', label: 'Mens S'},
-    { value: 'mm', label: 'Mens M'},
-    { value: 'ml', label: 'Mens L'},
-    { value: 'mxl', label: 'Mens XL'},
-    { value: 'mxxl', label: 'Mens XXL'},
-    { value: 'm3xl', label: 'Mens 3XL'}, 
+    { value: 'Womens S', label: 'Womens S'},
+    { value: 'Womens M', label: 'Womens M'},
+    { value: 'Womens L', label: 'Womens L'},
+    { value: 'Womens XL', label: 'Womens XL'},
+    { value: 'Womens XXL', label: 'Womens XXL'},
+    { value: 'Womens 3XL', label: 'Womens 3XL'},
+    { value: 'Mens S', label: 'Mens S'},
+    { value: 'Mens M', label: 'Mens M'},
+    { value: 'Mens L', label: 'Mens L'},
+    { value: 'Mens XL', label: 'Mens XL'},
+    { value: 'Mens XXL', label: 'Mens XXL'},
+    { value: 'Mens 3XL', label: 'Mens 3XL'}, 
 ]
 
 class RegisterForm extends React.Component{
@@ -38,59 +39,87 @@ class RegisterForm extends React.Component{
         super();
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
+            userName: null,
+            userEmail: null,
             officeSelectedOption: null,
             interestSelectedOption: null,
             tshirtSelectedOption: null
         };
     }
 
-    handleOfficeChange = officeSelectedOption => {
-        this.setState({ officeSelectedOption });
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value })
     }
 
-    handleInterestChange = interestSelectedOption => {
-        this.setState({ interestSelectedOption });
+    handleSelectChange = name => option => {
+        this.setState({ [name]: option })
     }
 
-    handleTShirtChange = tshirtSelectedOption => {
-        this.setState( { tshirtSelectedOption });
-    }
-
-    handleSubmit(event) {
+    handleSubmit = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.target);
+
+        var data = {
+            name: this.state.userName,
+            email: this.state.userEmail,
+            officeLocation: this.state.officeSelectedOption.value,
+            securityInterest: this.state.interestSelectedOption.value,
+            shirtSize: this.state.tshirtSelectedOption.value
+        }
+
+        await axios.post(
+            'https://registrationapi20191122063201.azurewebsites.net/Api/RegisterUser',
+            { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' } },
+            { data }
+        )
+        .then( res => {
+            console.log(res.data);
+        })
+        .catch(ex => {
+            console.log(ex);
+        })
     }
 
     render() {
-        const { officeSelectedOption, interestSelectedOption, tshirtSelectedOption } = this.state;
+        const { userName, userEmail, officeSelectedOption, interestSelectedOption, tshirtSelectedOption } = this.state;
 
         return (
             <form onSubmit={this.handleSubmit}>
                 <div>
                     <label htmlFor="name">Enter your name</label>
-                    <input id="name" name="name" type="text"></input>
+                    <input 
+                        name="userName" 
+                        type="text" 
+                        value={userName} 
+                        onChange={this.onChange}/>
                 </div>
 
                 <div>
                     <label htmlFor="email">Enter your email</label>
-                    <input id="email" name="email" type="text"></input>
+                    <input 
+                        name="userEmail" 
+                        type="text" 
+                        value={userEmail}
+                        onChange={this.onChange}/>
                 </div>
 
-                <Select className="select"
+                <Select 
+                    className="select"
                     value={officeSelectedOption}
-                    onChange={this.handleOfficeChange}
+                    onChange={this.handleSelectChange('officeSelectedOption')}
                     options={officeOptions}
                 />
 
-                <Select className="select"
+                <Select 
+                    className="select"
                     value={interestSelectedOption}
-                    onChange={this.handleInterestChange}
+                    onChange={this.handleSelectChange('interestSelectedOption')}
                     options={interestOptions}
                 />
 
-                <Select className="select"
+                <Select 
+                    className="select"
                     value={tshirtSelectedOption}
-                    onChange={this.handleTShirtChange}
+                    onChange={this.handleSelectChange('tshirtSelectedOption')}
                     options={tshirtOptions}
                 />
 
