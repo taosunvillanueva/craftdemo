@@ -4,9 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
-import Thankyou from './ThankYouPage';
-import AdminLogin from './AdminLogin';
-import Notfound from './NotFound'
+import Thankyou from './components/ThankYouPage';
+import AdminLogin from './components/AdminLogin';
+import Notfound from './components/NotFound'
 
 const Routing = () => (
     <BrowserRouter>

@@ -2,7 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom'
-import './App.css';
+import { Validate } from './Validator'
+import '../App.css';
 
 const officeOptions = [
     { value: 'Seattle', label: 'Seattle'},
@@ -40,11 +41,12 @@ class RegisterForm extends React.Component{
         super();
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            userName: null,
-            userEmail: null,
-            officeSelectedOption: null,
-            interestSelectedOption: null,
-            tshirtSelectedOption: null
+            userName: "",
+            userEmail: "",
+            officeSelectedOption: "",
+            interestSelectedOption: "",
+            tshirtSelectedOption: "",
+            errors: []
         };
     }
 
@@ -58,13 +60,20 @@ class RegisterForm extends React.Component{
 
     handleSubmit = async (event) => {
         event.preventDefault();
+        const { userName, userEmail, officeSelectedOption, interestSelectedOption, tshirtSelectedOption } = this.state;
+
+        const errors = Validate(userName, userEmail, officeSelectedOption, interestSelectedOption, tshirtSelectedOption);
+        if (errors.length > 0) {
+            this.setState({ errors })
+            return;
+        }
 
         var data = {
-            name: this.state.userName,
-            email: this.state.userEmail,
-            officeLocation: this.state.officeSelectedOption.value,
-            securityInterest: this.state.interestSelectedOption.value,
-            shirtSize: this.state.tshirtSelectedOption.value
+            name: userName,
+            email: userEmail,
+            officeLocation: officeSelectedOption.value,
+            securityInterest: interestSelectedOption.value,
+            shirtSize: tshirtSelectedOption.value
         }
 
         await axios.post(
@@ -82,10 +91,14 @@ class RegisterForm extends React.Component{
     }
 
     render() {
-        const { userName, userEmail, officeSelectedOption, interestSelectedOption, tshirtSelectedOption } = this.state;
+        const { userName, userEmail, officeSelectedOption, interestSelectedOption, tshirtSelectedOption, errors } = this.state;
 
         return (
             <form onSubmit={this.handleSubmit}>
+                {errors.map(error => (
+                    <p key={error}>Error: {error}</p>
+                ))}
+
                 <div>
                     <label htmlFor="name">Enter your name</label>
                     <input 
