@@ -8,12 +8,6 @@ import Thankyou from './ThankYouPage';
 import AdminLogin from './AdminLogin';
 import Notfound from './NotFound'
 
-// const RouterApp = () => (
-//     <BrowserRouter>
-//         <App />
-//     </BrowserRouter>
-// )
-
 const Routing = () => (
     <BrowserRouter>
         <div>
