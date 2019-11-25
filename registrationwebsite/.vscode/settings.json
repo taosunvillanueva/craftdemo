@@ -1,4 +1,4 @@
 {
-    "appService.defaultWebAppToDeploy": "/subscriptions/96b1872f-14f5-4086-ae63-ffb5577359cf/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/react-hackerconregister",
-    "appService.deploySubpath": "build"
+    "appService.deploySubpath": "",
+    "appService.defaultWebAppToDeploy": "/subscriptions/96b1872f-14f5-4086-ae63-ffb5577359cf/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/hackerconregister"
 }

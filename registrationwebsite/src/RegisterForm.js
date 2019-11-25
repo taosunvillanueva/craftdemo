@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
+import { withRouter } from 'react-router-dom'
 import './App.css';
 
 const officeOptions = [
@@ -73,6 +74,7 @@ class RegisterForm extends React.Component{
         )
         .then( res => {
             console.log(res.data);
+            this.props.history.push('/thankyou')
         })
         .catch(ex => {
             console.log(ex);
@@ -129,4 +131,4 @@ class RegisterForm extends React.Component{
     };
 }
 
-export default RegisterForm;
+export default withRouter(RegisterForm);
