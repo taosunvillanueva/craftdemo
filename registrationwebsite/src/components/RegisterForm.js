@@ -83,7 +83,12 @@ class RegisterForm extends React.Component{
         )
         .then( res => {
             console.log(res.data);
-            this.props.history.push('/thankyou')
+            if (res.data.IsUpdated == false) {
+                this.props.history.push('/thankyou')
+            }
+            else {
+                this.props.history.push('/')
+            }
         })
         .catch(ex => {
             console.log(ex);

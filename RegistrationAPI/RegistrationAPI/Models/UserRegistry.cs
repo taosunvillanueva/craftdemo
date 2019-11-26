@@ -1,25 +1,26 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace RegistrationAPI.Models
 {
-    public class UserRegistry : TableEntity
+    public class UserRegistry
     {
-        public UserRegistry(string name, string email, string location, string interest, string size)
-        {
-            PartitionKey = location;
-            RowKey = name;
-
-            this.Name = name;
-            this.Email = email;
-            this.OfficeLocation = location;
-            this.SecurityInterest = interest;
-            this.ShirtSize = size;
-        }
-
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string OfficeLocation { get; set; }
         public string SecurityInterest { get; set; }
         public string ShirtSize { get; set; }
+        public bool IsUpdated { get; set; }
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        public void CreateId()
+        {
+            this.Id = Guid.NewGuid().ToString();
+        }
     }
 }
