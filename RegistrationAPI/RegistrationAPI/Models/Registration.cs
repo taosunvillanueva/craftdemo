@@ -3,7 +3,7 @@ using System;
 
 namespace RegistrationAPI.Models
 {
-    public class UserRegistry
+    public class Registration
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
@@ -12,15 +12,9 @@ namespace RegistrationAPI.Models
         public string OfficeLocation { get; set; }
         public string SecurityInterest { get; set; }
         public string ShirtSize { get; set; }
-        public bool IsUpdated { get; set; }
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);
-        }
-
-        public void CreateId()
-        {
-            this.Id = Guid.NewGuid().ToString();
         }
     }
 }

@@ -18,37 +18,10 @@
             this.dbManager.SetupDbClient();
         }
 
-        public async Task<UserRegistry> TryRegister(UserRegistry userRegister)
+        public async Task<Registration> RegisterUser(Registration userRegister)
         {
-            try
-            {
-                userRegister.IsUpdated = false;
-                var existingRegistry = await this.CheckIfUserRegistryExists(userRegister);
-                var result = existingRegistry == null ?
-                    await dbManager.AddUserRegistryAsync(userRegister) :
-                    await dbManager.UpdateUserRegisterAsync(existingRegistry, userRegister);
-
-                return result;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return null;
-            }
-        }
-
-        private async Task<UserRegistry> CheckIfUserRegistryExists(UserRegistry userRegister)
-        {
-            try
-            {
-                var result = await this.dbManager.CheckItemExistsAsync(userRegister);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+            var registeredUser = await dbManager.AddUserRegistryAsync(userRegister);
+            return registeredUser;
         }
     }
 }

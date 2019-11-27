@@ -83,15 +83,19 @@ class RegisterForm extends React.Component{
         )
         .then( res => {
             console.log(res.data);
-            if (res.data.IsUpdated == false) {
-                this.props.history.push('/thankyou')
-            }
-            else {
-                this.props.history.push('/')
-            }
+            this.props.history.push('/thankyou')
         })
         .catch(ex => {
             console.log(ex);
+            if (ex.response.status == 409) {
+                this.props.history.push({
+                    pathname: '/exists',
+                    state: {email: userEmail}
+                })
+            }
+            else {
+                this.props.history.push('/failed')
+            }
         })
     }
 

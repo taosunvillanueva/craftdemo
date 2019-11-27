@@ -1,13 +1,9 @@
-﻿using Microsoft.Azure.Cosmos;
-using RegistrationAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-
-namespace RegistrationAPI.BusinessLogic
+﻿namespace RegistrationAPI.BusinessLogic
 {
+    using Microsoft.Azure.Cosmos;
+    using RegistrationAPI.Models;
+    using System.Threading.Tasks;
+
     public class DatabaseManager
     {
         // TODO: put the secrets into KeyVault
@@ -15,64 +11,34 @@ namespace RegistrationAPI.BusinessLogic
         public static readonly string PrimaryKey = "oLOQcEzzvyAGS5kIX7y7wdcK4cSrmhmUMDs78dgOwrIBf35adQfR83vRKtCNmxbuoGCeknFDXCy5EiRSmkSTyw==";
         private CosmosClient cosmosClient;
         private Database database;
-        private Container container;
         private string databaseId = "demodb";
-        private string containerId = "userregistry1";
+        private Container userContainer;
+        private Container registrationContainer;
+        private string userContainerId = "userinfo";
+        private string registrationContainerId = "registration";
 
         public void SetupDbClient()
         {
             this.cosmosClient = new CosmosClient(EndpointUri, PrimaryKey);
             this.database = this.cosmosClient.GetDatabase(this.databaseId);
-            this.container = this.database.GetContainer(this.containerId);
+            this.userContainer = this.database.GetContainer(this.userContainerId);
+            this.registrationContainer = this.database.GetContainer(this.registrationContainerId);
         }
 
-        public async Task<UserRegistry> CheckItemExistsAsync(UserRegistry userRegistry)
+        public async Task<Registration> AddUserRegistryAsync(Registration registration)
         {
-            var sql = $"SELECT Top 1 * FROM c WHERE c.Email = '{userRegistry.Email.ToLower()}'";
-
-            var queryDefinition = new QueryDefinition(sql);
-            var queryResultSetIterator =  this.container.GetItemQueryIterator<UserRegistry>(queryDefinition);
-
-            if (queryResultSetIterator.HasMoreResults)
+            // Create user. An new id will be generated and assigned to the new user
+            var user = new Models.User()
             {
-                var currentResult = await queryResultSetIterator.ReadNextAsync();
-                return currentResult.FirstOrDefault();
-            }
+                Email = registration.Email
+            };
 
-            return null;
-        }
+            registration.Id = user.Id;
 
-        public async Task<UserRegistry> AddUserRegistryAsync(UserRegistry userRegistry)
-        {
-            try
-            {
-                userRegistry.CreateId();
-                var response = await this.container.CreateItemAsync<UserRegistry>(userRegistry, new PartitionKey(userRegistry.OfficeLocation));
-                return response.Resource;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Adding new user registry failed with exception: " + ex.Message);
-                return null;
-            }
-        }
+            await this.userContainer.CreateItemAsync<Models.User>(user, new PartitionKey(user.Email));
+            var registrationResponse = await this.registrationContainer.CreateItemAsync<Registration>(registration, new PartitionKey(registration.OfficeLocation));
 
-        public async Task<UserRegistry> UpdateUserRegisterAsync(UserRegistry existingRegistry, UserRegistry newUserRegistry)
-        {
-            try
-            {
-                newUserRegistry.CreateId();
-                newUserRegistry.IsUpdated = true;
-                var response = await this.container.ReplaceItemAsync<UserRegistry>(newUserRegistry, existingRegistry.Id);
-                var updatedUserRegistry = response.Resource;
-
-                return updatedUserRegistry;
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("Updating user registry failed with exception: " + ex.Message);
-                return null;
-            }
+            return registrationResponse.Resource;
         }
     }
 }

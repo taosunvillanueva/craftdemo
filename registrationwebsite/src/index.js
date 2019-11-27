@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Link, Switch } from 'react-router-dom'
 import Thankyou from './components/ThankYouPage';
 import AdminLogin from './components/AdminLogin';
 import Notfound from './components/NotFound'
+import {RegistrationFailed, EmailExists } from './components/RegistrationFailed';
 
 const Routing = () => (
     <BrowserRouter>
@@ -22,7 +23,9 @@ const Routing = () => (
             <Switch>
                 <Route exact path="/" component={App} />
                 <Route path="/thankyou" component={Thankyou} />
+                <Route path="/failed" component={RegistrationFailed} />
                 <Route path="/admin" component={AdminLogin} />
+                <Route path="/exists" component={EmailExists} />
                 <Route component={Notfound} />
             </Switch>
         </div>

@@ -1,5 +1,6 @@
 ﻿namespace RegistrationAPI.Controllers
 {
+    using Microsoft.Azure.Cosmos;
     using Newtonsoft.Json.Linq;
     using RegistrationAPI.BusinessLogic;
     using RegistrationAPI.Models;
@@ -17,25 +18,27 @@
         {
             try
             {
-                var userRegistry = userRegistryJson.ToObject<UserRegistry>();
+                var userRegistry = userRegistryJson.ToObject<Registration>();
 
-                var result = await RegistrationManager.Instance.TryRegister(userRegistry);
+                var registeredUser = await RegistrationManager.Instance.RegisterUser(userRegistry);
 
-                if (result != null)
+                if (registeredUser != null)
                 {
                     // Standard status code 201 for POST succesfully created new item
-                    var message = Request.CreateResponse(HttpStatusCode.Created, result);
-
-                    // Todo: the real URI of the newly created item
-                    message.Headers.Location = new Uri(Request.RequestUri + userRegistry.Name);
+                    var message = Request.CreateResponse(HttpStatusCode.Created, registeredUser);
+                    message.Headers.Location = new Uri(Request.RequestUri + userRegistry.Id);
                     return message;
                 }
 
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "User registration failed");
             }
-            catch (Exception e)
+            catch (CosmosException cosmosEx)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
+                return Request.CreateErrorResponse(cosmosEx.StatusCode, cosmosEx);
+            }
+            catch (Exception otherEx)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, otherEx);
             }
         }
     }
