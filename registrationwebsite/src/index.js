@@ -25,9 +25,9 @@ const Routing = () => (
                 <Route exact path="/" component={App} />
                 <Route path="/thankyou" component={Thankyou} />
                 <Route path="/failed" component={RegistrationFailed} />
-                <Route path="/admin" component={AdminPage} />
                 <Route path="/exists" component={EmailExists} />
-                <Route paht="/noaccess" component={NoAccess} />
+                {/* <Route paht="/noaccess" component={NoAccess} /> */}
+                <Route path="/admin" component={AdminPage} />
                 <Route component={Notfound} />
             </Switch>
         </div>

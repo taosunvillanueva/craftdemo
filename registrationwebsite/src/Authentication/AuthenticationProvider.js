@@ -37,9 +37,8 @@ const AuthenticationProvider = {
         return Promise.resolve();
     },
     checkAuth: () => {
-        return localStorage.getItem('token')
-            ? Promise.resolve()
-            : Promise.reject();
+        const storedToken = localStorage.getItem('token');
+        return storedToken ? Promise.resolve(): Promise.reject();
     },
     getPermissions: () => {
         const role = localStorage.getItem('permissions');
