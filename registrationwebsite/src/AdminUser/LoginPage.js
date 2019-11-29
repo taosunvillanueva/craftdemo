@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { AuthenticationConsumer } from './AuthenticationContext';
-import { useLogin, useNotify } from 'react-admin'
 import { Validate } from './CredentialValidator'
 
 class LoginPage extends React.Component {

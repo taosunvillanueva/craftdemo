@@ -13,8 +13,8 @@ class AdminContent extends React.Component {
     render() {
         return (
             <div className="admincontent">
-                <h2>TODO: Admin Page Displaying all the registrations</h2>
                 <button onClick={this.handleClick}>Logout</button>
+                <h2>TODO: Admin Page Displaying all the registrations</h2>
             </div>
         )
     }
