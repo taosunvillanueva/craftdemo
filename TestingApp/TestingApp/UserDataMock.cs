@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using RegistrationAPI.Models;
+
     public static class UserDataMock
     {
         public static string FetchSampleUserDataAsJson()
@@ -9,12 +10,12 @@
             return JsonConvert.SerializeObject(FetchData());
         }
 
-        public static UserRegistry FetchSampleUserData()
+        public static RegistrationAPI.Models.Registration FetchSampleUserData()
         {
             return FetchData();
         }
 
-        private static UserRegistry FetchData()
+        private static RegistrationAPI.Models.Registration FetchData()
         {
             var name = "Tao444";
             var email = "tao.sun.toto@gmail.com";
@@ -22,7 +23,7 @@
             var securityInterest = "Getting Ahead of Attackers";
             var shirtSize = "Men M";
 
-            return new UserRegistry()
+            return new RegistrationAPI.Models.Registration()
             {
                 Name = name,
                 Email = email,
@@ -30,6 +31,29 @@
                 SecurityInterest = securityInterest,
                 ShirtSize = shirtSize
             };
+        }
+
+        public static AdminUserTemp CreateAdminUser()
+        {
+            var name = "Tao";
+            var password = "TaoAdmin";
+
+            var admin = new AdminUserTemp()
+            {
+                Username = name,
+                Password = password
+            };
+
+            return admin;
+        }
+
+        private static byte[] HashPassword(string password)
+        {
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
+            var hashAlgorithm = new System.Security.Cryptography.SHA256Managed();
+            var hash = hashAlgorithm.ComputeHash(data);
+
+            return hash;
         }
     }
 }

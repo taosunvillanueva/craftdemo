@@ -96,7 +96,7 @@ class RegisterForm extends React.Component{
             else {
                 this.props.history.push('/failed')
             }
-        })
+        });
     }
 
     render() {

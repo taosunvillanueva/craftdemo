@@ -2,6 +2,7 @@
 {
     using Microsoft.Azure.Cosmos;
     using RegistrationAPI.Models;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class DatabaseManager
@@ -14,8 +15,10 @@
         private string databaseId = "demodb";
         private Container userContainer;
         private Container registrationContainer;
+        private Container adminContainer;
         private string userContainerId = "userinfo";
         private string registrationContainerId = "registration";
+        private string adminContainerId = "admin";
 
         public void SetupDbClient()
         {
@@ -23,6 +26,7 @@
             this.database = this.cosmosClient.GetDatabase(this.databaseId);
             this.userContainer = this.database.GetContainer(this.userContainerId);
             this.registrationContainer = this.database.GetContainer(this.registrationContainerId);
+            this.adminContainer = this.database.GetContainer(this.adminContainerId);
         }
 
         public async Task<Registration> AddUserRegistryAsync(Registration registration)
@@ -39,6 +43,18 @@
             var registrationResponse = await this.registrationContainer.CreateItemAsync<Registration>(registration, new PartitionKey(registration.OfficeLocation));
 
             return registrationResponse.Resource;
+        }
+
+        public async Task<AdminUser> AddAdminUserAsync(AdminUser adminUser)
+        {
+            var adminUserResponse = await this.adminContainer.CreateItemAsync<AdminUser>(adminUser, new PartitionKey(adminUser.Username));
+            return adminUserResponse.Resource;
+        }
+
+        public async Task<bool> VerifyAdminUserAsync(AdminUser adminUser)
+        {
+            var adminOnDbResponse = await this.adminContainer.ReadItemAsync<AdminUser>(adminUser.GetUserId(), new PartitionKey(adminUser.Username));
+            return adminOnDbResponse.Resource.Password.SequenceEqual(adminUser.Password);
         }
     }
 }

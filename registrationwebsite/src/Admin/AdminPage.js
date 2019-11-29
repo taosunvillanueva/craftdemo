@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 
-const LazyAuthentication = React.lazy(() => import('../Authentication/LazyAuthentication'));
+const LazyAuthentication = React.lazy(() => import('./LazyAuthentication'));
 
 const AdminPage = () => (
     <div>

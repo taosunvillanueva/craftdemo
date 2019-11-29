@@ -23,11 +23,16 @@
 
         public void PerformTest()
         {
-            var userData = UserDataMock.FetchSampleUserData();
-            var testResult = RegisterAsync(userData).Result;
+            //var userData = UserDataMock.FetchSampleUserData();
+            //var testResult = RegisterAsync(userData).Result;
+
+            var admin = UserDataMock.CreateAdminUser();
+            //var adminResult = AddAdminAsync(admin).Result;
+
+            var adminResult = VerifyAdminAsync(admin).Result;
         }
 
-        private async Task<bool> RegisterAsync(UserRegistry userRegistry)
+        private async Task<bool> RegisterAsync(RegistrationAPI.Models.Registration userRegistry)
         {
             HttpStatusCode result = HttpStatusCode.BadRequest;
 
@@ -35,6 +40,36 @@
             var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
 
             var response = await client.PostAsync($"Api/RegisterUser", stringContent);
+
+            if (response.IsSuccessStatusCode)
+                result = response.StatusCode;
+
+            return result == HttpStatusCode.Created;
+        }
+
+        private async Task<bool> AddAdminAsync(AdminUserTemp adminUser)
+        {
+            HttpStatusCode result = HttpStatusCode.BadRequest;
+
+            var json = JsonConvert.SerializeObject(adminUser);
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"Api/AddAdmin", stringContent);
+
+            if (response.IsSuccessStatusCode)
+                result = response.StatusCode;
+
+            return result == HttpStatusCode.Created;
+        }
+
+        private async Task<bool> VerifyAdminAsync(AdminUserTemp adminUser)
+        {
+            HttpStatusCode result = HttpStatusCode.BadRequest;
+
+            var json = JsonConvert.SerializeObject(adminUser);
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"Api/AdminLogin", stringContent);
 
             if (response.IsSuccessStatusCode)
                 result = response.StatusCode;

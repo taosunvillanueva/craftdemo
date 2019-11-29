@@ -23,5 +23,17 @@
             var registeredUser = await dbManager.AddUserRegistryAsync(userRegister);
             return registeredUser;
         }
+
+        public async Task<AdminUser> AddAdminUser(AdminUser adminUser)
+        {
+            var createdAdminUser = await dbManager.AddAdminUserAsync(adminUser);
+            return createdAdminUser;
+        }
+
+        public async Task<bool> VerifyAdmin(AdminUser adminUser)
+        {
+            var adminPasswordMatch = await dbManager.VerifyAdminUserAsync(adminUser);
+            return adminPasswordMatch;
+        }
     }
 }
