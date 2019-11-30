@@ -1,10 +1,8 @@
 ﻿namespace RegistrationAPI.BusinessLogic
 {
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using RegistrationAPI.Models;
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
 
@@ -47,6 +45,18 @@
             var jObject = new JObject();
             var registrasionsJson = new JavaScriptSerializer().Serialize(registrations);
             var jProperty = new JProperty("registrations", registrasionsJson);
+            jObject.Add(jProperty);
+
+            return jObject;
+        }
+
+        public async Task<JObject> RunSql<T>(string sql)
+        {
+            var sqlResult = await dbManager.RunSQLAsync<T>(sql);
+
+            var jObject = new JObject();
+            var resultJson = new JavaScriptSerializer().Serialize(sqlResult);
+            var jProperty = new JProperty("result", resultJson);
             jObject.Add(jProperty);
 
             return jObject;

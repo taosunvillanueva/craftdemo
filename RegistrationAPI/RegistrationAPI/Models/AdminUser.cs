@@ -3,12 +3,11 @@
     using Newtonsoft.Json;
     using System;
 
-    public class AdminUser
+    public class AdminUser : AdminUserSimple
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
-        public string Username { get; set; }
-        public Byte[] Password { get; set; }
+        public new Byte[] Password { get; set; }
 
         public void CreateId()
         {

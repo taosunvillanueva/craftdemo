@@ -10,7 +10,7 @@
     {
         public static AdminUser ConertToAdminUserDatabaseEntry(JObject adminTempJson)
         {
-            var adminTemp = adminTempJson.ToObject<AdminUserTemp>();
+            var adminTemp = adminTempJson.ToObject<AdminUserSimple>();
 
             var adminUser = new AdminUser()
             {

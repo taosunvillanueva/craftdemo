@@ -288,7 +288,7 @@
     </Compile>
     <Compile Include="Models\AdminUser.cs" />
     <Compile Include="Models\AdminUserHelper.cs" />
-    <Compile Include="Models\AdminUserTemp.cs" />
+    <Compile Include="Models\AdminUserSimple.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Registration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

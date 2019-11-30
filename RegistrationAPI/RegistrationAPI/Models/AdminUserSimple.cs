@@ -1,6 +1,6 @@
 ﻿namespace RegistrationAPI.Models
 {
-    public class AdminUserTemp
+    public class AdminUserSimple
     {
         public string Username { get; set; }
         public string Password { get; set; }

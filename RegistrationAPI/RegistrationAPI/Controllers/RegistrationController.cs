@@ -5,7 +5,6 @@
     using RegistrationAPI.BusinessLogic;
     using RegistrationAPI.Models;
     using System;
-    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -98,6 +97,26 @@
             }
         }
 
+        [HttpPost]
+        [Route("Api/TestRegistrationSQL")]
+        public async Task<IHttpActionResult> TestRegistrationSQL([FromBody]string sql)
+        {
+            try
+            {
+                var sqlResult = await RegistrationManager.Instance.RunSql<Registration>(sql);
+                if (sqlResult != null)
+                {
+                    return Ok<JObject>(sqlResult);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("Api/RegistrationsByCity/{city}")]
         public async Task<IHttpActionResult> GetRegistrationsByCity(string city)
@@ -118,8 +137,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }

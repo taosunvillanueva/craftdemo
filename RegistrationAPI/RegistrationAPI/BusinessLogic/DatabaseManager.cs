@@ -61,23 +61,29 @@
         public async Task<IList<Registration>> GetRegistrationByCityAsync(string city)
         {
             var sql = "SELECT * FROM c WHERE c.OfficeLocation = '" + city + "'";
+            var registrations = await this.RunSQLAsync<Registration>(sql);
 
+            return registrations;
+        }
+
+        public async Task<IList<T>> RunSQLAsync<T>(string sql)
+        {
             var option = new QueryRequestOptions();
             QueryDefinition queryDefinition = new QueryDefinition(sql);
-            FeedIterator<Registration> queryResultSetIterator = this.registrationContainer.GetItemQueryIterator<Registration>(queryDefinition);
+            FeedIterator<T> queryResultSetIterator = this.registrationContainer.GetItemQueryIterator<T>(queryDefinition);
 
-            IList<Registration> registrations = new List<Registration>();
+            IList<T> items = new List<T>();
 
             while (queryResultSetIterator.HasMoreResults)
             {
-                FeedResponse<Registration> currentResultSet = await queryResultSetIterator.ReadNextAsync();
-                foreach (Registration registration in currentResultSet)
+                FeedResponse<T> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                foreach (T registration in currentResultSet)
                 {
-                    registrations.Add(registration);
+                    items.Add(registration);
                 }
             }
 
-            return registrations;
+            return items;
         }
     }
 }

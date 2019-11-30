@@ -30,7 +30,9 @@
             //var adminResult = AddAdminAsync(admin).Result;
             //var adminResult = VerifyAdminAsync(admin).Result;
 
-            var registrationsResult = GetRegistrationsByCityAsync("San Diego").Result;
+            //var registrationsResult = GetRegistrationsByCityAsync("San Diego").Result;
+
+            var sqlResult = RunSqlAsync().Result;
         }
 
         private async Task<bool> RegisterAsync(RegistrationAPI.Models.Registration userRegistry)
@@ -48,7 +50,7 @@
             return result == HttpStatusCode.Created;
         }
 
-        private async Task<bool> AddAdminAsync(AdminUserTemp adminUser)
+        private async Task<bool> AddAdminAsync(AdminUserSimple adminUser)
         {
             HttpStatusCode result = HttpStatusCode.BadRequest;
 
@@ -63,7 +65,7 @@
             return result == HttpStatusCode.Created;
         }
 
-        private async Task<bool> VerifyAdminAsync(AdminUserTemp adminUser)
+        private async Task<bool> VerifyAdminAsync(AdminUserSimple adminUser)
         {
             HttpStatusCode result = HttpStatusCode.BadRequest;
 
@@ -88,6 +90,22 @@
                 result = response.StatusCode;
 
             return result == HttpStatusCode.Created;
+        }
+
+        private async Task<string> RunSqlAsync()
+        {
+            var sql = "SELECT * FROM c Order By c.OfficeLocation OFFSET 2 LIMIT 2";
+
+            var json = JsonConvert.SerializeObject(sql);
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"Api/TestRegistrationSQL", stringContent);
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+                return content;
+
+            return null;
         }
     }
 }

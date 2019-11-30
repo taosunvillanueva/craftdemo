@@ -33,12 +33,12 @@
             };
         }
 
-        public static AdminUserTemp CreateAdminUser()
+        public static AdminUserSimple CreateAdminUser()
         {
             var name = "Tao";
             var password = "TaoAdmin";
 
-            var admin = new AdminUserTemp()
+            var admin = new AdminUserSimple()
             {
                 Username = name,
                 Password = password
