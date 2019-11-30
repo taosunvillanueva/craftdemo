@@ -5,6 +5,7 @@
     using RegistrationAPI.BusinessLogic;
     using RegistrationAPI.Models;
     using System;
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -96,6 +97,30 @@
                 return Unauthorized();
             }
         }
-    }
 
+        [HttpGet]
+        [Route("Api/RegistrationsByCity/{city}")]
+        public async Task<IHttpActionResult> GetRegistrationsByCity(string city)
+        {
+            try
+            {
+                var registrations = await RegistrationManager.Instance.GetRegistrationByCity(city);
+                if (registrations != null)
+                {
+                    return Ok<JObject>(registrations);
+                }
+
+                return Unauthorized();
+            }
+            catch (CosmosException cosmosEx)
+            {
+                return InternalServerError(cosmosEx);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return BadRequest();
+            }
+        }
+    }
 }

@@ -2,6 +2,7 @@
 {
     using Microsoft.Azure.Cosmos;
     using RegistrationAPI.Models;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -55,6 +56,28 @@
         {
             var adminOnDbResponse = await this.adminContainer.ReadItemAsync<AdminUser>(adminUser.GetUserId(), new PartitionKey(adminUser.Username));
             return adminOnDbResponse.Resource.Password.SequenceEqual(adminUser.Password);
+        }
+
+        public async Task<IList<Registration>> GetRegistrationByCityAsync(string city)
+        {
+            var sql = "SELECT * FROM c WHERE c.OfficeLocation = '" + city + "'";
+
+            var option = new QueryRequestOptions();
+            QueryDefinition queryDefinition = new QueryDefinition(sql);
+            FeedIterator<Registration> queryResultSetIterator = this.registrationContainer.GetItemQueryIterator<Registration>(queryDefinition);
+
+            IList<Registration> registrations = new List<Registration>();
+
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                FeedResponse<Registration> currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                foreach (Registration registration in currentResultSet)
+                {
+                    registrations.Add(registration);
+                }
+            }
+
+            return registrations;
         }
     }
 }

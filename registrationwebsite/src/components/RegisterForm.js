@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { Validate } from './Validator'
 import '../App.css';
 
-const officeOptions = [
+export const officeOptions = [
     { value: 'Seattle', label: 'Seattle'},
     { value: 'San Diego', label: 'San Diego'},
     { value: 'New York', label: 'New York'},

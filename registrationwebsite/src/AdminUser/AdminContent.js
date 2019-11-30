@@ -1,20 +1,58 @@
 import React from 'react';
+import { officeOptions } from '../components/RegisterForm';
+import axios from 'axios';
+import Select from 'react-select';
+import RegistrationTable from './RegistrationTable';
+import LoadingIndicator from  './LoadingIndicator';
 
 class AdminContent extends React.Component {
     constructor(props){
         super(props);
         this.handleClick = this.handleClick.bind(this);
+        this.loadingElement = React.createRef();
+        this.state = {
+            citySelectedOption: "",
+            items: [],
+            isfetching: false
+        }
     }
 
     handleClick() {
         this.props.logout();
     }
 
+    handleSelectChange = name => async option => {
+        this.loadingElement.current.changeLoading(true);
+        this.setState({ [name]: option })
+        const url = "https://registrationapi20191122063201.azurewebsites.net/Api/RegistrationsByCity/" + option.value;
+
+        await axios.get(url)
+            .then(res => {
+                console.log(res);
+                this.setState( { items: res.data.registrations } )
+            })
+            .catch(ex => {
+                console.log(ex);
+            })
+
+        this.loadingElement.current.changeLoading(false);
+    }
+
     render() {
+        const { citySelectedOption, items, isfetching } = this.state;
+
         return (
             <div className="admincontent">
                 <button onClick={this.handleClick}>Logout</button>
-                <h2>TODO: Admin Page Displaying all the registrations</h2>
+                <Select 
+                    className="select"
+                    value={citySelectedOption}
+                    onChange={this.handleSelectChange('citySelectedOption')}
+                    options={officeOptions}
+                />
+                
+                <LoadingIndicator isloading={isfetching} ref={this.loadingElement} />
+                { items.length > 0 && <RegistrationTable data={items}/>}
             </div>
         )
     }

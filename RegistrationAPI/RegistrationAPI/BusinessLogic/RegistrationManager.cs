@@ -1,8 +1,12 @@
 ﻿namespace RegistrationAPI.BusinessLogic
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using RegistrationAPI.Models;
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Web.Script.Serialization;
 
     public sealed class RegistrationManager
     {
@@ -34,6 +38,18 @@
         {
             var adminPasswordMatch = await dbManager.VerifyAdminUserAsync(adminUser);
             return adminPasswordMatch;
+        }
+
+        public async Task<JObject> GetRegistrationByCity(string city)
+        {
+            var registrations = await dbManager.GetRegistrationByCityAsync(city);
+
+            var jObject = new JObject();
+            var registrasionsJson = new JavaScriptSerializer().Serialize(registrations);
+            var jProperty = new JProperty("registrations", registrasionsJson);
+            jObject.Add(jProperty);
+
+            return jObject;
         }
     }
 }

@@ -26,10 +26,11 @@
             //var userData = UserDataMock.FetchSampleUserData();
             //var testResult = RegisterAsync(userData).Result;
 
-            var admin = UserDataMock.CreateAdminUser();
+            //var admin = UserDataMock.CreateAdminUser();
             //var adminResult = AddAdminAsync(admin).Result;
+            //var adminResult = VerifyAdminAsync(admin).Result;
 
-            var adminResult = VerifyAdminAsync(admin).Result;
+            var registrationsResult = GetRegistrationsByCityAsync("San Diego").Result;
         }
 
         private async Task<bool> RegisterAsync(RegistrationAPI.Models.Registration userRegistry)
@@ -70,6 +71,18 @@
             var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
 
             var response = await client.PostAsync($"Api/AdminLogin", stringContent);
+
+            if (response.IsSuccessStatusCode)
+                result = response.StatusCode;
+
+            return result == HttpStatusCode.Created;
+        }
+
+        private async Task<bool> GetRegistrationsByCityAsync(string city)
+        {
+            HttpStatusCode result = HttpStatusCode.BadRequest;
+
+            var response = await client.GetAsync($"Api/RegistrationsByCity/" + city);
 
             if (response.IsSuccessStatusCode)
                 result = response.StatusCode;
