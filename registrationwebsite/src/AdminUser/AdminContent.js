@@ -13,12 +13,36 @@ class AdminContent extends React.Component {
         this.state = {
             citySelectedOption: "",
             items: [],
-            isfetching: false
+            isfetching: false,
+            per: 3,
+            page: 1,
+            totalPages: null
         }
+    }
+
+    componentWillMount() {
+        this.loadUser();
     }
 
     handleClick() {
         this.props.logout();
+    }
+
+    loadUser = () => {
+        const { per, page } = this.state;
+        const url = `https://registrationapi20191122063201.azurewebsites.net/Api/GetAllRegistrations?sort=OfficeLocation&PerPage=${per}&Page=${page}`;
+
+        await axios.get(url)
+            .then(res => {
+                this.setState({
+                    items: res.data.registrations,
+                    scrolling: false,
+                    totalPages: res.data.totalPages
+                 });
+            })
+            .catch(ex => {
+                console.log(ex);
+            });
     }
 
     handleSelectChange = name => async option => {

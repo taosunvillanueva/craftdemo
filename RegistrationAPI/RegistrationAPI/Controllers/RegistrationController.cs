@@ -129,7 +129,31 @@
                     return Ok<JObject>(registrations);
                 }
 
-                return Unauthorized();
+                return InternalServerError(new Exception("Registrations cannot be retrieved."));
+            }
+            catch (CosmosException cosmosEx)
+            {
+                return InternalServerError(cosmosEx);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Api/GetAllRegistrations/{sort}")]
+        public async Task<IHttpActionResult> GetAllRegistrationsSort(string sort, [FromUri] string page, [FromUri] string perPage)
+        {
+            try
+            {
+                var registrations = await RegistrationManager.Instance.GetRegistrationSort(sort, page, perPage);
+                if (registrations != null)
+                {
+                    return Ok<JObject>(registrations);
+                }
+
+                return InternalServerError(new Exception("Registrations cannot be retrieved."));
             }
             catch (CosmosException cosmosEx)
             {

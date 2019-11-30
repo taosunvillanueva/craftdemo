@@ -8,6 +8,16 @@
 
     public sealed class RegistrationManager
     {
+        /// <summary>
+        /// By default, there is no offset
+        /// </summary>
+        private const int defaultPage = 0;
+
+        /// <summary>
+        /// By default, we get maximum 10 items
+        /// </summary>
+        private const int defaultPerPage = 10;
+
         private static readonly Lazy<RegistrationManager> lazy = new Lazy<RegistrationManager>(() => new RegistrationManager());
 
         private DatabaseManager dbManager;
@@ -60,6 +70,29 @@
             jObject.Add(jProperty);
 
             return jObject;
+        }
+
+        public async Task<JObject> GetRegistrationSort(string sort, string pageValue, string perPageValue)
+        {
+            int page = defaultPage;
+            if (!string.IsNullOrEmpty(pageValue) && !int.TryParse(pageValue, out page))
+            {
+                throw new ArgumentException("page is not a number. page is: " + page);
+            }
+
+            int perPage = defaultPerPage;
+            if (!string.IsNullOrEmpty(perPageValue) && !int.TryParse(perPageValue, out perPage))
+            {
+                throw new ArgumentException("perPage is not a number. perPage is: " + perPage);
+            }
+
+            var sql = this.dbManager.BuildSQLSortQuery(sort, page * perPage, perPage);
+            if (!string.IsNullOrEmpty(sql))
+            {
+                return await this.RunSql<Registration>(sql);
+            }
+
+            return null;
         }
     }
 }

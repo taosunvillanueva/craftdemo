@@ -85,5 +85,15 @@
 
             return items;
         }
+
+        public string BuildSQLSortQuery(string sort, int offset, int limit)
+        {
+            if (string.IsNullOrEmpty(sort) || offset < 0 || limit <= 0)
+            {
+                return null;
+            }
+
+            return $"SELECT * FROM c Order By c.{sort} OFFSET {offset} LIMIT {limit}";
+        }
     }
 }

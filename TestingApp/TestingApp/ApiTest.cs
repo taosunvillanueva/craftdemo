@@ -32,7 +32,9 @@
 
             //var registrationsResult = GetRegistrationsByCityAsync("San Diego").Result;
 
-            var sqlResult = RunSqlAsync().Result;
+            //var sqlResult = RunSqlAsync().Result;
+
+            var allRegistrationResult = GetAllRegistrationsSortAsync("OfficeLocation").Result;
         }
 
         private async Task<bool> RegisterAsync(RegistrationAPI.Models.Registration userRegistry)
@@ -90,6 +92,18 @@
                 result = response.StatusCode;
 
             return result == HttpStatusCode.Created;
+        }
+
+        private async Task<string> GetAllRegistrationsSortAsync(string sort)
+        {
+            var url = $"Api/GetAllRegistrations/{sort}?page=2&perPage=3";
+            var response = await client.GetAsync(url);
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+                return content;
+
+            return null;
         }
 
         private async Task<string> RunSqlAsync()

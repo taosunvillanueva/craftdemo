@@ -20,6 +20,12 @@
                 routeTemplate: "api/{controller}/{action}/{city}",
                 defaults: null
             );
+
+            config.Routes.MapHttpRoute(
+                name: "SortApi",
+                routeTemplate: "api/{controller}/{action}/{sort}",
+                defaults: null
+            );
         }
     }
 }
