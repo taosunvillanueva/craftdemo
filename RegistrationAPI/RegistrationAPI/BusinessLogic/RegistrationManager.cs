@@ -54,7 +54,7 @@
 
             var jObject = new JObject();
             var registrasionsJson = new JavaScriptSerializer().Serialize(registrations);
-            var jProperty = new JProperty("registrations", registrasionsJson);
+            var jProperty = new JProperty("result", registrasionsJson);
             jObject.Add(jProperty);
 
             return jObject;

@@ -15,35 +15,63 @@ class AdminContent extends React.Component {
             items: [],
             isfetching: false,
             per: 3,
-            page: 1,
+            page: 0,
             totalPages: null
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.loadUser();
-    }
+        window.addEventListener('scroll', this.handleScroll);
+    };
+    
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+    };
 
     handleClick() {
         this.props.logout();
     }
 
-    loadUser = () => {
+    handleScroll = (e) => {
+        const lastRow = document.querySelector("tbody tr:last-child");
+        const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+        const pageOffset = window.pageYOffset + window.innerHeight;
+
+        if (pageOffset > lastRowOffset) {
+            this.loadMore();
+        }
+    };
+
+    loadUser = async () => {
         const { per, page } = this.state;
-        const url = `https://registrationapi20191122063201.azurewebsites.net/Api/GetAllRegistrations?sort=OfficeLocation&PerPage=${per}&Page=${page}`;
+        const url = `https://registrationapi20191122063201.azurewebsites.net/Api/GetAllRegistrations/OfficeLocation?page=${page}&perPage=${per}`;
 
         await axios.get(url)
             .then(res => {
-                this.setState({
-                    items: res.data.registrations,
+                this.setState(prevState => ({
+                    items: [
+                        ...prevState.items,
+                        ...JSON.parse(res.data.result)
+                    ],
                     scrolling: false,
                     totalPages: res.data.totalPages
-                 });
+                }))
             })
             .catch(ex => {
                 console.log(ex);
             });
     }
+
+    loadMore = () => {
+        this.setState(
+            prevState => ({
+                page: prevState.page + 1,
+                scrollig: true
+            }),
+            this.loadUser
+        );
+    };
 
     handleSelectChange = name => async option => {
         this.loadingElement.current.changeLoading(true);
@@ -53,7 +81,7 @@ class AdminContent extends React.Component {
         await axios.get(url)
             .then(res => {
                 console.log(res);
-                this.setState( { items: res.data.registrations } )
+                this.setState( { items: res.data.result } )
             })
             .catch(ex => {
                 console.log(ex);
@@ -77,6 +105,7 @@ class AdminContent extends React.Component {
                 
                 <LoadingIndicator isloading={isfetching} ref={this.loadingElement} />
                 { items.length > 0 && <RegistrationTable data={items}/>}
+                <button onClick={e => this.loadMore()}>Load More</button>
             </div>
         )
     }

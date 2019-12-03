@@ -35,6 +35,9 @@ class LoginPage extends React.Component {
         .catch(ex => {
             this.setState({ errors: ['Login faield. Incorrect admin username or password.'] });
         });
+
+        // Clear out the previous errors
+        this.setState( { errors: [] } );
     };
 
     render() {
@@ -68,49 +71,5 @@ class LoginPage extends React.Component {
         )
     }
 }
-
-// const LoginPage = () => {
-//     const [username, setUsername] = useState('');
-//     const [password, setPassword] = useState('');
-//     const [errors, setError] = useState([]);
-
-//     const submit = submitAction => e => {
-//         const errors = Validate(username, password);
-//         if (errors.length > 0) {
-//             setError(errors);
-//             return;
-//         }
-
-//         e.preventDefault();
-//         submitAction({username, password});
-//     };
-
-//     return  (
-//         <div>
-//             <AuthenticationConsumer>
-//                 {({ isAuth, login }) =>(
-//                     !isAuth &&
-//                     <form onSubmit={submit(login)}>
-//                         {errors.map(error => (
-//                             <p key={error}>Error: {error}</p>
-//                         ))}
-
-//                         <div>
-//                             <label htmlFor="name">Username:</label>
-//                             <input name="username" type="username" value={username} onChange={e => setUsername(e.target.value)} />
-//                         </div>
-                        
-//                         <div>
-//                             <label htmlFor="password">Password:</label>
-//                             <input name="password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-//                         </div>
-
-//                         <input type="submit" value="Login" />
-//                     </form>
-//                 )}
-//             </AuthenticationConsumer>
-//         </div>
-//     );
-// }
 
 export default LoginPage;

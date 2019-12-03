@@ -23,7 +23,7 @@ function createData(name, calories, fat, carbs, protein) {
 
 export default function RegistrationTable(props) {
   const classes = useStyles();
-  const items = JSON.parse(props.data);
+  const items = props.data;
 
   return (
     <Paper className={classes.root}>
@@ -31,6 +31,7 @@ export default function RegistrationTable(props) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
+            <TableCell align="right">Office Location</TableCell>
             <TableCell align="right">Email</TableCell>
             <TableCell align="right">Security Interest</TableCell>
             <TableCell align="right">T-Shirt Size</TableCell>
@@ -40,6 +41,7 @@ export default function RegistrationTable(props) {
           {items.map(item => (
             <TableRow key={item.Name}>
               <TableCell component="th" scope="row">{item.Name}</TableCell>
+              <TableCell align="right">{item.OfficeLocation}</TableCell>
               <TableCell align="right">{item.Email}</TableCell>
               <TableCell align="right">{item.SecurityInterest}</TableCell>
               <TableCell align="right">{item.ShirtSize}</TableCell>
