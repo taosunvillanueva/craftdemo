@@ -14,7 +14,7 @@ class AdminContent extends React.Component {
             citySelectedOption: "",
             items: [],
             isfetching: false,
-            per: 3,
+            per: 15,
             page: 0,
             totalPages: null
         }
@@ -34,11 +34,14 @@ class AdminContent extends React.Component {
     }
 
     handleScroll = (e) => {
+        const table = document.querySelector("Table");
+        const offsetTop = table.offsetTop;
+
         const lastRow = document.querySelector("tbody tr:last-child");
-        const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight;
+        const lastRowOffset = lastRow.offsetTop + lastRow.clientHeight / 2;
         const pageOffset = window.pageYOffset + window.innerHeight;
 
-        if (pageOffset > lastRowOffset) {
+        if (pageOffset - offsetTop > lastRowOffset) {
             this.loadMore();
         }
     };
@@ -73,21 +76,36 @@ class AdminContent extends React.Component {
         );
     };
 
+    handleLoadAll = () => {
+        this.setState({ 
+            page: 0, 
+            per: 15, 
+            items: [], 
+            citySelectedOption: ""
+            },
+            this.loadUser
+        );
+
+        window.addEventListener('scroll', this.handleScroll);
+    }
+
     handleSelectChange = name => async option => {
+        window.removeEventListener('scroll', this.handleScroll);
+
         this.loadingElement.current.changeLoading(true);
-        this.setState({ [name]: option })
+        this.setState({ [name]: option, items: [] });
         const url = "https://registrationapi20191122063201.azurewebsites.net/Api/RegistrationsByCity/" + option.value;
 
         await axios.get(url)
             .then(res => {
                 console.log(res);
-                this.setState( { items: res.data.result } )
+                this.setState( { items: JSON.parse(res.data.result) } );
+                this.loadingElement.current.changeLoading(false);
             })
             .catch(ex => {
                 console.log(ex);
+                this.loadingElement.current.changeLoading(false);
             })
-
-        this.loadingElement.current.changeLoading(false);
     }
 
     render() {
@@ -96,6 +114,7 @@ class AdminContent extends React.Component {
         return (
             <div className="admincontent">
                 <button onClick={this.handleClick}>Logout</button>
+                <button onClick={this.handleLoadAll}>Load All Registration</button>
                 <Select 
                     className="select"
                     value={citySelectedOption}
@@ -105,7 +124,6 @@ class AdminContent extends React.Component {
                 
                 <LoadingIndicator isloading={isfetching} ref={this.loadingElement} />
                 { items.length > 0 && <RegistrationTable data={items}/>}
-                <button onClick={e => this.loadMore()}>Load More</button>
             </div>
         )
     }

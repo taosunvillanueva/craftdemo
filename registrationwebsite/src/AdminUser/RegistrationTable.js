@@ -30,7 +30,8 @@ export default function RegistrationTable(props) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
+            <TableCell>Id</TableCell>
+            <TableCell align="right">Name</TableCell>
             <TableCell align="right">Office Location</TableCell>
             <TableCell align="right">Email</TableCell>
             <TableCell align="right">Security Interest</TableCell>
@@ -38,9 +39,10 @@ export default function RegistrationTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map(item => (
+          {items.map((item, index) => (
             <TableRow key={item.Name}>
-              <TableCell component="th" scope="row">{item.Name}</TableCell>
+              <TableCell component="th" scope="row">{index + 1}</TableCell>
+              <TableCell align="right">{item.Name}</TableCell>
               <TableCell align="right">{item.OfficeLocation}</TableCell>
               <TableCell align="right">{item.Email}</TableCell>
               <TableCell align="right">{item.SecurityInterest}</TableCell>

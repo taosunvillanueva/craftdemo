@@ -30,14 +30,11 @@ class LoginPage extends React.Component {
         await submitAction({username, password})
         .then(res => {
             // login succeeded. clert the existing login credentials to be extra safe
-            this.setState({ username: '', password: '' });
+            this.setState({ username: '', password: '', errors: [] });
         })
         .catch(ex => {
             this.setState({ errors: ['Login faield. Incorrect admin username or password.'] });
         });
-
-        // Clear out the previous errors
-        this.setState( { errors: [] } );
     };
 
     render() {
@@ -45,28 +42,32 @@ class LoginPage extends React.Component {
 
         return (
             <div>
-                <AuthenticationConsumer>
-                    {({ isAuth, login }) =>(
-                        !isAuth &&
-                        <form onSubmit={this.handleSubmit(login)}>
-                            {errors.map(error => (
-                                <p key={error}>Error: {error}</p>
-                            ))}
+                <div>
+                    {errors.map(error => (
+                        <p key={error}>Error: {error}</p>
+                    ))}
+                </div>
+                <div>
+                    <AuthenticationConsumer>
+                        {({ isAuth, login }) =>(
+                            !isAuth &&
+                            <form onSubmit={this.handleSubmit(login)}>
+                                <div>
+                                    <label htmlFor="name">Username:</label>
+                                    <input name="username" type="username" value={username} onChange={this.onChange} />
+                                </div>
+                                
+                                <div>
+                                    <label htmlFor="password">Password:</label>
+                                    <input name="password" type="password" value={password} onChange={this.onChange} />
+                                </div>
 
-                            <div>
-                                <label htmlFor="name">Username:</label>
-                                <input name="username" type="username" value={username} onChange={this.onChange} />
-                            </div>
-                            
-                            <div>
-                                <label htmlFor="password">Password:</label>
-                                <input name="password" type="password" value={password} onChange={this.onChange} />
-                            </div>
+                                <input type="submit" value="Login" />
+                            </form>
+                        )}
+                    </AuthenticationConsumer>
+                </div>
 
-                            <input type="submit" value="Login" />
-                        </form>
-                    )}
-                </AuthenticationConsumer>
             </div>
         )
     }
